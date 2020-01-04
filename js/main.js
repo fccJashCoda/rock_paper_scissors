@@ -1,11 +1,14 @@
+// Set up game rules
+const RULESET = ['Rock', 'Paper', 'Scissors']
+
 // Random number generator
 function random (min, max) {
     return Math.floor(Math.random() * (max-min)) + min;
 }
 
 // Generate random computer choice
-function computerPlay () {
-    return random(0,3)
+function computerPlay (rules) {
+    return rules[random(0,3)]
 }
 
 // Prompt the player for his next move using basic validation
@@ -15,7 +18,7 @@ function getPlayerSelection () {
     if (!['rock', 'paper', 'scissors'].includes(selection.toLowerCase())) {
         console.log('Error: Please follow the rules!')
         getPlayerSelection()
-    }
+    } 
 
     return processPlayerSelection(selection)
 }
@@ -25,30 +28,28 @@ function processPlayerSelection(selection) {
     return selection[0].toUpperCase() + selection.slice(1).toLowerCase()
 }
 
-// Get round ruleset
-function getPossiblePlays (playerSelection) {
-    let possiblePlays;
+// A single round of rock paper scissors
+function playRound (playerSelection, computerSelection) {
+    let result;
 
     switch(playerSelection) {
         case 'Rock':
-            possiblePlays = ['Scissors', 'Rock', 'Paper'];
+            result = (computerSelection == "Scissors") ? `${playerSelection} beats ${computerSelection}.You win!` :
+                     (computerSelection == "Paper") ? `${playerSelection} is beaten by ${computerSelection}. You lose!` :
+                     `${playerSelection} cancels ${computerSelection}. It's a draw!`;
             break;
         case 'Paper':
-            possiblePlays = ['Rock', 'Paper', 'Scissors'];
+            result = (computerSelection == "Rock") ? `${playerSelection} beats ${computerSelection}.You win!` :
+                     (computerSelection == "Scissors") ? `${playerSelection} is beaten by ${computerSelection}. You lose!` :
+                     `${playerSelection} cancels ${computerSelection}. It's a draw!`;
             break;
         case 'Scissors':
-            possiblePlays = ['Paper', 'Scissors', 'Rock']
-            break; 
+            result = (computerSelection == "Paper") ? `${playerSelection} beat ${computerSelection}.You win!` :
+                     (computerSelection == "Rock") ? `${playerSelection} are beaten by ${computerSelection}. You lose!` :
+                     `${playerSelection} cancel ${computerSelection}. It's a draw!`;
+            break;
     }
 
-    return possiblePlays
-}
-
-// A single round of rock paper scissors
-function playRound (playerSelection, computerSelection, rules) {
-    let result = (computerSelection == 1) ? `${playerSelection} cancels ${rules[computerSelection]}. It's a draw!` : 
-                 (computerSelection < 1) ? `${playerSelection} beats ${rules[computerSelection]}. You win!` :
-                 `${playerSelection} loses to ${rules[computerSelection]}. You lose!`
     return result
 }
 
@@ -56,10 +57,9 @@ function playRound (playerSelection, computerSelection, rules) {
 function game () {
     for (let i = 0; i < 5; i++) {
         let playerSelection = getPlayerSelection();
-        let rules = getPossiblePlays(playerSelection);
-        let computerSelection = computerPlay();
-
-        console.log(playRound(playerSelection, computerSelection, rules))
+        let computerSelection = computerPlay(RULESET);
+        
+        console.log(playRound(playerSelection, computerSelection))
     }
 }
 
